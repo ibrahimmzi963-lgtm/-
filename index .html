@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل الفنيين والخدمات المنزلية</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding-bottom: 30px;
+        }
+
+        header {
+            background-color: #0056b3;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .search-container, .add-container {
+            margin: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .search-container select, .search-container input,
+        .add-container input, .add-container select, .add-container button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .add-container h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #0056b3;
+        }
+
+        .btn-submit {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .section-title {
+            margin: 20px 15px 10px 15px;
+            font-size: 1.1rem;
+            color: #222;
+        }
+
+        .technicians-list {
+            padding: 0 15px;
+        }
+
+        .tech-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .tech-info h4 {
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+            color: #222;
+        }
+
+        .tech-info p {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .status-available {
+            background-color: #e1f5fe;
+            color: #0288d1;
+        }
+        .status-busy {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-call {
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            margin: 0 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>دليل الفنيين والخدمات المنزلية</h1>
+        <p>ابحث أو أضف خدمتك بكل سهولة</p>
+    </header>
+
+    <!-- 1. شريط البحث والتصفية -->
+    <div class="search-container">
+        <select id="cityFilter" onchange="filterTechs()">
+            <option value="">كل المدن...</option>
+            <option value="طرابلس">طرابلس</option>
+            <option value="بنغازي">بنغازي</option>
+            <option value="مصراتة">مصراتة</option>
+            <option value="الزاوية">الزاوية</option>
+        </select>
+        <input type="text" id="searchInput" oninput="filterTechs()" placeholder="ابحث باسم الفني، المهنة، أو المشكلة...">
+    </div>
+
+    <!-- 2. قائمة الفنيين والمخرجات (في المنتصف مباشرة) -->
+    <h2 class="section-title">الفنيون المتاحون</h2>
+    
+    <div class="technicians-list" id="techList">
+        <div class="no-results" id="noResults">لا يوجد فنيين مسجلين حالياً. اضف أول فني من الأسفل!</div>
+    </div>
+
+    <!-- 3. نموذج إضافة فني جديد (في أسفل الصفحة) -->
+    <div class="add-container">
+        <h3>أضف فني جديد للقائمة</h3>
+        <input type="text" id="newName" placeholder="اسم الفني">
+        <select id="newCity">
+            <option value="">اختر المدينـة...</option>
+            <option value="طرابلس">طرابلس</option>
+            <option value="بنغازي">بنغازي</option>
+            <option value="مصراتة">مصراتة</option>
+            <option value="الزاوية">الزاوية</option>
+        </select>
+        <input type="text" id="newJob" placeholder="التخصص (مثال: فني تكييف)">
+        <input type="tel" id="newPhone" placeholder="رقم الهاتف">
+        <select id="newStatus">
+            <option value="متاح للعمل 🟢">متاح للعمل 🟢</option>
+            <option value="مشغول حالياً 🔴">مشغول حالياً 🔴</option>
+        </select>
+        <button class="btn-submit" onclick="addTechnician()">إضافة للقائمة</button>
+    </div>
+
+    <script>
+        let technicians = JSON.parse(localStorage.getItem('technicians')) || [];
+
+        // عرض الفنيين فور فتح الصفحة
+        renderTechs(technicians);
+
+        function addTechnician() {
+            const name = document.getElementById('newName').value.trim();
+            const city = document.getElementById('newCity').value;
+            const job = document.getElementById('newJob').value.trim();
+            const phone = document.getElementById('newPhone').value.trim();
+            const status = document.getElementById('newStatus').value;
+
+            if (!name || !city || !job || !phone) {
+                alert('الرجاء تعبئة جميع الحقول بشكل صحيح!');
+                return;
+            }
+
+            technicians.push({ name, city, job, phone, status });
+            localStorage.setItem('technicians', JSON.stringify(technicians));
+
+            // تفريغ المدخلات بعد الإضافة
+            document.getElementById('newName').value = '';
+            document.getElementById('newCity').value = '';
+            document.getElementById('newJob').value = '';
+            document.getElementById('newPhone').value = '';
+            document.getElementById('newStatus').value = 'متاح للعمل 🟢';
+
+            renderTechs(technicians);
+        }
+
+        function renderTechs(list) {
+            const techListDiv = document.getElementById('techList');
+            
+            if (list.length === 0) {
+                techListDiv.innerHTML = '<div class="no-results">لا يوجد فنيين مطابقين لبحثك.</div>';
+                return;
+            }
+
+            let html = '';
+            list.forEach(tech => {
+                const statusClass = tech.status.includes('متاح') ? 'status-available' : 'status-busy';
+                html += `
+                    <div class="tech-card">
+                        <div class="tech-info">
+                            <h4>${tech.name}</h4>
+                            <p>${tech.job} • ${tech.city}</p>
+                            <span class="status-badge ${statusClass}">${tech.status}</span>
+                        </div>
+                        <div class="actions">
+                            <a href="tel:${tech.phone}" class="btn-call">اتصال 📞</a>
+                        </div>
+                    </div>
+                `;
+            });
+            techListDiv.innerHTML = html;
+        }
+
+        function filterTechs() {
+            let searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cityVal = document.getElementById('cityFilter').value;
+
+            // قاموس البحث الذكي للمرادفات والمشاكل الشائعة
+            if (searchVal.includes('مكيف') || searchVal.includes('بارد') || searchVal.includes('حار') || searchVal.includes('تكييف')) {
+                searchVal = 'تكييف';
+            } else if (searchVal.includes('ماء') || searchVal.includes('حنفية') || searchVal.includes('تسريب') || searchVal.includes('صمامات')) {
+                searchVal = 'سباك';
+            } else if (searchVal.includes('كهرباء') || searchVal.includes('ضوء') || searchVal.includes('قابس') || searchVal.includes('مولد')) {
+                searchVal = 'كهربائي';
+            }
+
+            const filtered = technicians.filter(tech => {
+                const matchesSearch = tech.job.toLowerCase().includes(searchVal) || 
+                                      tech.name.toLowerCase().includes(searchVal) || 
+                                      searchVal === '';
+                const matchesCity = cityVal === "" || tech.city === cityVal;
+                return matchesSearch && matchesCity;
+            });
+
+            renderTechs(filtered);
+        }
+    </script>
+</body>
+</html>
